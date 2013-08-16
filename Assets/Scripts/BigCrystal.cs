@@ -9,6 +9,10 @@ public class BigCrystal : MonoBehaviour {
 
   private float sinAmt = 0f;
 
+  void Start() {
+    sinAmt = Random.Range(0, 6.2f);
+  }
+
   void Update() {
     transform.localRotation = Quaternion.Euler(
       Time.deltaTime * rotationRate.x + transform.localRotation.eulerAngles.x,

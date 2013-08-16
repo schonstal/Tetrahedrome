@@ -9,6 +9,8 @@ public class CubeSpawner : MonoBehaviour {
   public float minScale = 1;
   public float maxScale = 2;
   public float rotationRate = 3f;
+  public float minStartHeight = 1.6f;
+  public float maxStartHeight = 4f;
   public Transform particle;
    
 	private float sinAmt;
@@ -43,4 +45,10 @@ public class CubeSpawner : MonoBehaviour {
 			cubes[i].Rotate(Vector3.one * Time.deltaTime * rotationRate, Space.World);
     }	
 	}
+
+  void OnDrawGizmosSelected() {
+    Gizmos.color = new Color(1, 0, 0, 0.5F);
+    Gizmos.DrawCube(transform.position, new Vector3(radius, 5, radius));
+  }
+
 }
