@@ -40,7 +40,7 @@ public class CrystalSpawn : MonoBehaviour {
       anchor.localScale = new Vector3(scale, scale, scale);
 
       Transform crystal = anchor.Find("Crystal").transform;
-      crystal.localPosition = new Vector3(Random.Range(crystal.localScale.x + distanceMin, distanceMax), -0.5f, 0);
+      crystal.localPosition = new Vector3(Random.Range(crystal.localScale.x + distanceMin, distanceMax), 0, 0);
     }
   }
 
