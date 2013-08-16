@@ -22,7 +22,7 @@ public class CubeSpawner : MonoBehaviour {
 		cubes = new Transform[cubeCount];
 		sinOffsets = new Vector3[cubeCount];
 		
-		for (int i = 0; i < cubeCount-1; i++) {
+		for (int i = 0; i < cubeCount; i++) {
       Transform cube = (Transform)Instantiate(particle, Vector3.zero, Quaternion.identity);
 			cubes[i] = cube;
       float scale = Random.Range(minScale, maxScale);
