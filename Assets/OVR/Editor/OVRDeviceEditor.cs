@@ -48,6 +48,7 @@ public class OVRDeviceEditor : Editor
 		{
 			m_Component.InitialPredictionTime = EditorGUILayout.Slider("Prediction Time", m_Component.InitialPredictionTime,	0, 0.1f);
 			m_Component.InitialAccelGain 	  = EditorGUILayout.Slider("Accel Gain",      m_Component.InitialAccelGain, 		0, 0.2f);			
+			m_Component.ResetTracker 	  	  = EditorGUILayout.Toggle("Reset Tracker",   m_Component.ResetTracker);			
 		}
 
 		if (GUI.changed)

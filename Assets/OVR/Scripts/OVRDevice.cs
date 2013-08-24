@@ -155,6 +155,8 @@ public class OVRDevice : MonoBehaviour
 	[DllImport ("OculusPlugin")]
 	private static extern bool OVR_EnableMagYawCorrection(int sensor, bool enable);
 	[DllImport ("OculusPlugin")]
+	private static extern bool OVR_IsYawCorrectionEnabled(int sensor);
+	[DllImport ("OculusPlugin")]
 	private static extern bool OVR_IsMagYawCorrectionInProgress(int sensor);
 	
 	
@@ -164,7 +166,8 @@ public class OVRDevice : MonoBehaviour
 	// PUBLIC
 	public float InitialPredictionTime 							= 0.05f; // 50 ms
 	public float InitialAccelGain  								= 0.05f; // default value
-	
+	public bool  ResetTracker									= true;  // if off, tracker will not reset when new scene
+																		 // is loaded
 	// STATIC
 	private static MessageList MsgList 							= new MessageList(0, 0, 0);
 	private static bool  OVRInit 								= false;
@@ -181,6 +184,9 @@ public class OVRDevice : MonoBehaviour
 	public static float  ScreenVCenter 							= 0.0f;	 // meters 
 	public static float  DistK0, DistK1, DistK2, DistK3 		= 0.0f;
 	
+	// Used to reduce the size of render distortion and give better fidelity
+	public static float  DistortionFitScale 					= 1.0f;  	
+	
 	// The physical offset of the lenses, used for shifting both IPD and lens distortion
 	private static float LensOffsetLeft, LensOffsetRight   		= 0.0f;
 	
@@ -191,10 +197,6 @@ public class OVRDevice : MonoBehaviour
 	// Copied from initialized public variables set in editor
 	private static float PredictionTime 						= 0.0f;
 	private static float AccelGain 								= 0.0f;
-	
-	// Used to reduce the size of render distortion and give better fidelity
-	// Accessed with a public static function
-	private static float  DistortionFitScale 					= 0.7f;  // Optimized for DK1 (7")
 	
 	// We will keep map sensors to different numbers to know which sensor is 
 	// attached to which device
@@ -233,16 +235,14 @@ public class OVRDevice : MonoBehaviour
 		// Distortion fit parameters based on if we are using a 5" (Prototype, DK2+) or 7" (DK1) 
 		if (HScreenSize < 0.140f) 	// 5.5"
 		{
-			DistortionFitX = 0.0f;
-			DistortionFitY = 1.0f;
-			
-			// Don't shrink as much (5.5" has denser pixels)
-			DistortionFitScale = 1.0f;
+			DistortionFitX 		= 0.0f;
+			DistortionFitY 		= 1.0f;
 		}
-    	else 						// 7"
+    	else 						// 7" (DK1)
 		{
-			DistortionFitX = -1.0f;
-			DistortionFitY =  0.0f;
+			DistortionFitX 		= -1.0f;
+			DistortionFitY 		=  0.0f;
+			DistortionFitScale 	=  0.7f;
 		}
 		
 		// Calculate the lens offsets for each eye and store 
@@ -327,8 +327,12 @@ public class OVRDevice : MonoBehaviour
 	// OnDestroy
 	void OnDestroy()
 	{
-		OVR_Destroy();
-		OVRInit = false;
+		// We may want to turn this off so that values are maintained between level / scene loads
+		if(ResetTracker == true)
+		{
+			OVR_Destroy();
+			OVRInit = false;
+		}
 	}
 	
 	
@@ -666,6 +670,12 @@ public class OVRDevice : MonoBehaviour
 	public static bool EnableMagYawCorrection(int sensor, bool enable)
 	{
 		return OVR_EnableMagYawCorrection(SensorList[sensor], enable);
+	}
+	
+	// OVR_IsYawCorrectionEnabled
+	public static bool IsYawCorrectionEnabled(int sensor)
+	{
+		return OVR_IsYawCorrectionEnabled(SensorList[sensor]);
 	}
 	
 	// IsMagYawCorrectionInProgress

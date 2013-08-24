@@ -49,6 +49,17 @@ public class OVRMagCalibration
 	
 	// * * * * * * * * * * * * *
 	
+	// SetInitialCalibrationState
+	// We call this before we start the Update loop to see if
+	// Mag has been set by Calibration tool
+	public void SetInitialCalibarationState()
+	{
+		if(OVRDevice.IsMagCalibrated(0) && OVRDevice.IsYawCorrectionEnabled(0))
+		{
+			MagCalState = MagCalibrationState.MagReady;
+		}
+	}
+	
 	// Disabled
 	public bool Disabled()
 	{
@@ -159,7 +170,7 @@ public class OVRMagCalibration
 	
 	// UpdateMagYawDriftCorrection
 	public void UpdateMagYawDriftCorrection()
-	{
+	{		
 		bool calibrateInput = false;
 		
 		// Auto

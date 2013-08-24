@@ -206,8 +206,9 @@ public class OVRMainMenu : MonoBehaviour
 					h = w;
 					w = t;
 				}
-						
-				GUIRenderTexture = new RenderTexture(w, h, 24);	
+				
+				// We don't need a depth buffer on this texture
+				GUIRenderTexture = new RenderTexture(w, h, 0);	
 				GuiHelper.SetPixelResolution(w, h);
 				GuiHelper.SetDisplayResolution(OVRDevice.HResolution, OVRDevice.VResolution);
 			}
@@ -282,6 +283,9 @@ public class OVRMainMenu : MonoBehaviour
 		OVRMessenger.AddListener<Device, bool>("Sensor_Attached", UpdateDeviceDetectionMsgCallback);
 		
 		// Mag Yaw-Drift correction
+		// We will test to see if we are already calibrated by the
+		// Calibration tool
+		MagCal.SetInitialCalibarationState(); 
 		UpdateFunctions += MagCal.UpdateMagYawDriftCorrection;
 		MagCal.SetOVRCameraController(ref CameraController);
 		
@@ -672,7 +676,6 @@ public class OVRMainMenu : MonoBehaviour
 			GUIShowVRVariables();
 		}
 		
-		//GuiHelper.StereoDrawTexture(0.45f, 0.45f, 0.1f, 0.1f, ref TestImage, Color.white);
 		Crosshair.OnGUICrosshair();
 		
 		// Restore active render texture
